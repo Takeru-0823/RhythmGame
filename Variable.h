@@ -1,13 +1,11 @@
 #pragma once
-#include "DxLib.h"
 
 const int WIDTH = 960, HEIGHT = 640;
 const int CENTER = 320;
 const int RADIUS = 50;
 const int PERFECTDISTANCE = 20;
 const int GREATDISTANCE = 50;
-const int WHITE = GetColor(255, 255, 255);
-const int RED = GetColor(255, 0, 0);
+const int SPEED = 20;
 
 struct POSITION
 {
@@ -21,3 +19,5 @@ struct SCORE
 	int good = 0;
 	int bad = 0;
 };
+
+

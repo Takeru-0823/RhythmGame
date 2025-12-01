@@ -1,7 +1,8 @@
 #include "stdlib.h"
-#include "time.h"
+#include "Color.h"
 #include "Variable.h"
 #include "Resource.h"
+
 
 enum Scene
 {
@@ -29,9 +30,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	badSE = LoadSoundMem("badSE.mp3");
 
 	Scene scene = TITLE;
-
-	//PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
-
 
 	while (1)
 	{
@@ -62,8 +60,15 @@ Scene title()
 {
 	DrawGraph(300, 200, imgTitle, TRUE);
 
-	SetFontSize(50);
-	DrawString(350, 400, "PUSH SPACE", WHITE);
+	static int blink = 0;
+
+	blink++;
+	if ((blink / 20) % 2 == 0) 
+	{
+		SetFontSize(50);
+		DrawString(350, 400, "PUSH SPACE", WHITE);
+	}
+
 	if (CheckHitKey(KEY_INPUT_SPACE))
 	{
 		PlaySoundMem(bgm, DX_PLAYTYPE_LOOP);
@@ -74,62 +79,60 @@ Scene title()
 
 Scene play()
 {
-	POSITION scorePos;
-	scorePos.x = 10;
-	scorePos.y = 590;
-
+	POSITION scorePos = { 10, 590 };
 	static POSITION notesPos = { WIDTH, CENTER };
-
 	static SCORE score = {0, 0, 0};
-
-	static int notesSpeed = 10;
-
-	static bool hitKey = false;
+	static int beforeSpace = 0;
+	static bool showJudge = false;
+	static int timer = 50;
 
 	SetFontSize(40);
 	DrawFormatString(scorePos.x, scorePos.y, WHITE, "P:%d  G:%d  B:%d", score.perfect, score.good, score.bad);
 
-	DrawCircle(CENTER, CENTER, RADIUS, WHITE, TRUE);
+	DrawCircle(CENTER, CENTER, RADIUS + 10, WHITE, FALSE);
 
-	notesPos.x = notesPos.x - notesSpeed;
+	notesPos.x -= SPEED;
 	DrawCircle(notesPos.x, notesPos.y, RADIUS, RED, TRUE);
 
-	if (notesPos.x >= WIDTH - 20)
-	{
-		notesSpeed = rand() % 20 + 5;
-		hitKey = false;
-	}
-	else if (notesPos.x < 0)
+	if (notesPos.x < 0)
 	{
 		notesPos.x = WIDTH;
 	}
 
+	int nowSpace = CheckHitKey(KEY_INPUT_SPACE);
 
-
-	if (CheckHitKey(KEY_INPUT_SPACE) && hitKey == false)
+	if (beforeSpace == 0 && nowSpace == 1)
 	{
-		hitKey = true;
-		int distance = (CENTER - notesPos.x);
+		showJudge = true;
+		int distance = abs((CENTER - notesPos.x));
 
-		if (distance < PERFECTDISTANCE && distance > -PERFECTDISTANCE)
+		if (distance <= PERFECTDISTANCE)
 		{
+			SetFontSize(30);
+			DrawString(270, 200, "Perfect", RED);
+
 			PlaySoundMem(perfectSE, DX_PLAYTYPE_BACK);
 			score.perfect++;
 		}
-		else if (distance < GREATDISTANCE && distance > -GREATDISTANCE)
+		else if (distance <= GREATDISTANCE)
 		{
+			SetFontSize(30);
+			DrawString(290, 200, "Good", YELLOW);
+
 			PlaySoundMem(goodSE, DX_PLAYTYPE_BACK);
 			score.good++;
 		}
 		else
 		{
+			SetFontSize(30);
+			DrawString(290, 200, "Bad", BLUE);
+
 			PlaySoundMem(badSE, DX_PLAYTYPE_BACK);
 			score.bad++;
 		}
 
-		notesPos.x = WIDTH;
-
 	}
+	beforeSpace = nowSpace;
 	return PLAY;
 
 }

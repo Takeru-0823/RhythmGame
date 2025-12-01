@@ -26,5 +26,8 @@
     <ClInclude Include="Resource.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
