@@ -127,6 +127,7 @@ Scene play()
 			PlaySoundMem(badSE, DX_PLAYTYPE_BACK);
 			score.bad++;
 		}
+		notesPos.x = WIDTH;
 
 	}
 	beforeSpace = nowSpace;
