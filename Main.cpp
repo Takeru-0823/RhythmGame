@@ -83,8 +83,6 @@ Scene play()
 	static POSITION notesPos = { WIDTH, CENTER };
 	static SCORE score = {0, 0, 0};
 	static int beforeSpace = 0;
-	static bool showJudge = false;
-	static int timer = 50;
 
 	SetFontSize(40);
 	DrawFormatString(scorePos.x, scorePos.y, WHITE, "P:%d  G:%d  B:%d", score.perfect, score.good, score.bad);
@@ -103,7 +101,6 @@ Scene play()
 
 	if (beforeSpace == 0 && nowSpace == 1)
 	{
-		showJudge = true;
 		int distance = abs((CENTER - notesPos.x));
 
 		if (distance <= PERFECTDISTANCE)
